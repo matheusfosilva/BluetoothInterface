@@ -25,6 +25,9 @@ const ConnectionStatus = {
   CONNECTED: "conectado",
 };
 
+const SerialServiceUUID = "0000dfb0-0000-1000-8000-00805f9b34fb";
+const SerialCharacteristicUUID = "0000dfb1-0000-1000-8000-00805f9b34fb";
+
 const requestBluetoothPermission = async () => {
   if (
     Platform.OS === "android" &&
@@ -68,6 +71,7 @@ export default function App() {
   const [connectionStatus, setConnectionStatus] = React.useState(
     ConnectionStatus.DISCONNECTED
   );
+  const [device, setDevice] = React.useState(null);
 
   function scanAndConnect() {
     manager.startDeviceScan(null, null, async (error, device) => {
@@ -87,6 +91,8 @@ export default function App() {
         // Proceed with connection on Gamesir-X2_EF device.
         try {
           await manager.connectToDevice(device.id);
+
+          setDevice(device);
 
           await manager.discoverAllServicesAndCharacteristicsForDevice(
             device.id
@@ -155,6 +161,23 @@ export default function App() {
     fetchData();
   }, []);
 
+  const onPressFront = () => {
+    const msg = base64.encode("1");
+
+    BleManager.writeCharacteristicWithResponseForDevice(
+      device.id,
+      SerialServiceUUID,
+      SerialCharacteristicUUID,
+      msg
+    )
+      .then((resp) => {
+        console.log("WRITE resp = ", resp);
+      })
+      .catch((err) => {
+        console.log("WRITE err = ", err);
+      });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -183,7 +206,7 @@ export default function App() {
         </Text>
       </View>
       <View style={styles.principalView}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={onPressFront}>
           <Image style={styles.button} source={front} />
         </TouchableOpacity>
 
