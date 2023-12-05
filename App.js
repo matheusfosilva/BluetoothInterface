@@ -84,7 +84,7 @@ export default function App() {
       // Check if it is a device you are looking for based on advertisement data
       console.log("🚀 ~ manager.startDeviceScan ~ device:", device.name);
       // or other criteria.
-      if (device.name === "Gamesir-X2_EF") {
+      if (device.name === "HC-05") {
         // Stop scanning as it's not necessary if you are scanning for one device.
         manager.stopDeviceScan();
 
@@ -178,6 +178,57 @@ export default function App() {
       });
   };
 
+  const onPressBack = () => {
+    const msg = base64.encode("2");
+
+    BleManager.writeCharacteristicWithResponseForDevice(
+      device.id,
+      SerialServiceUUID,
+      SerialCharacteristicUUID,
+      msg
+    )
+      .then((resp) => {
+        console.log("WRITE resp = ", resp);
+      })
+      .catch((err) => {
+        console.log("WRITE err = ", err);
+      });
+  };
+
+  const onPressLeft = () => {
+    const msg = base64.encode("3");
+
+    BleManager.writeCharacteristicWithResponseForDevice(
+      device.id,
+      SerialServiceUUID,
+      SerialCharacteristicUUID,
+      msg
+    )
+      .then((resp) => {
+        console.log("WRITE resp = ", resp);
+      })
+      .catch((err) => {
+        console.log("WRITE err = ", err);
+      });
+  };
+
+  const onPressRIght = () => {
+    const msg = base64.encode("4");
+
+    BleManager.writeCharacteristicWithResponseForDevice(
+      device.id,
+      SerialServiceUUID,
+      SerialCharacteristicUUID,
+      msg
+    )
+      .then((resp) => {
+        console.log("WRITE resp = ", resp);
+      })
+      .catch((err) => {
+        console.log("WRITE err = ", err);
+      });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -211,16 +262,16 @@ export default function App() {
         </TouchableOpacity>
 
         <View style={styles.aroundView}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onPressLeft}>
             <Image style={styles.button} source={left} />
           </TouchableOpacity>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onPressRIght}>
             <Image style={styles.button} source={right} />
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={onPressBacks}>
           <Image style={styles.button} source={back} />
         </TouchableOpacity>
       </View>
